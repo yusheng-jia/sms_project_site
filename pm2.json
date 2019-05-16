@@ -1,0 +1,10 @@
+{
+  "apps": [
+    {
+  
+     "name": "sms_project_site",
+  
+     "script": "bin/www"
+    }
+   ]
+}
