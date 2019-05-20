@@ -36,61 +36,67 @@ app.controller("main",function($scope, $interval, $http, Upload){
       alert("输入内容不能为空")
       return;
     }
-    if($scope.coomaanTpye == "行业短信"){
-      api_url = api_m
-      $http({
-        url:api_url,
-        method:'POST',
-        data:{
-          "query":$scope.message,
-          "userId":"dev001"
-        }
-      }).then(res => {
-        console.log(res.data)
-        if(res.data.name == "reject"){
-          $scope.status = "no";
-          $scope.status_text = "未通过 " + res.data.type;
-        }else if(res.data.name == "normal"){
-          $scope.status = "yes";
-          $scope.status_text = "已通过";
-        }else {
-          $scope.status = "chat";
-          $scope.status_text = "不确定 " + res.data.type;
-        }
-        $scope.rejectType = res.data.type
-        if(res.data.max3 != undefined && res.data.max3 != ""){
-          if(res.data.max3[0].split(":")[0] > 0.9){
-            $scope.max3.push(res.data.max3[0]);
-            $scope.showSimilar = true;
-          }
-          if(res.data.max3[1].split(":")[0] > 0.9){
-            $scope.max3.push(res.data.max3[1]);
-            $scope.showSimilar = true;
-          }
-          if(res.data.max3[2].split(":")[0] > 0.9){
-            $scope.max3.push(res.data.max3[2]);
-            $scope.showSimilar = true;
-          }
-        }else{
-          $scope.showSimilar = false;
-        }
-      },error => {
-        console.log(error)
-        alert("出错了")
-      })
-    }else{
+    // if($scope.coomaanTpye == "行业短信"){
+    //   api_url = api_m
+    //   $http({
+    //     url:api_url,
+    //     method:'POST',
+    //     data:{
+    //       "query":$scope.message,
+    //       "userId":"dev001"
+    //     }
+    //   }).then(res => {
+    //     console.log(res.data)
+    //     if(res.data.name == "reject"){
+    //       $scope.status = "no";
+    //       $scope.status_text = "未通过 " + res.data.type;
+    //     }else if(res.data.name == "normal"){
+    //       $scope.status = "yes";
+    //       $scope.status_text = "已通过";
+    //     }else {
+    //       $scope.status = "chat";
+    //       $scope.status_text = "不确定 " + res.data.type;
+    //     }
+    //     $scope.rejectType = res.data.type
+    //     if(res.data.max3 != undefined && res.data.max3 != ""){
+    //       if(res.data.max3[0].split(":")[0] > 0.9){
+    //         $scope.max3.push(res.data.max3[0]);
+    //         $scope.showSimilar = true;
+    //       }
+    //       if(res.data.max3[1].split(":")[0] > 0.9){
+    //         $scope.max3.push(res.data.max3[1]);
+    //         $scope.showSimilar = true;
+    //       }
+    //       if(res.data.max3[2].split(":")[0] > 0.9){
+    //         $scope.max3.push(res.data.max3[2]);
+    //         $scope.showSimilar = true;
+    //       }
+    //     }else{
+    //       $scope.showSimilar = false;
+    //     }
+    //   },error => {
+    //     console.log(error)
+    //     alert("出错了")
+    //   })
+    // }else{
+      var type = 1;
+      if($scope.coomaanTpye == "行业短信"){
+        type = 1;
+      }else{
+        type = 2;
+      }
       api_url = api_n
       $http({
         url:guard_api,
         method:'POST',
         data:{
-          "port_type":2,
+          "port_type":type,
           "content":$scope.message,
           "sender":"3333",
           "receiver": "3333"
         }
       }).then( res =>{
-        console.log("成功了")
+        console.log("成功了: " + JSON.stringify(res.data.data))
         var status =  res.data.data.status
         if(status == 300){
           $scope.status = "no"
@@ -106,7 +112,7 @@ app.controller("main",function($scope, $interval, $http, Upload){
         console.log("报错了")
         console.log(error)
       })
-    }
+    // }
     
   }
 
@@ -188,11 +194,11 @@ app.controller("main",function($scope, $interval, $http, Upload){
 
   var uploadFile = file => {
     console.log("file : " + file)
-    var type = "M";
+    var type = "营销短信";
     if($scope.multiTpye == "营销短信"){
       type = "营销短信";
     }else{
-      type = "N";
+      type = "行业短信";
     }
     Upload.upload({
         url: '/file-upload',
