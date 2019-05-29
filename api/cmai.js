@@ -3,6 +3,7 @@ var router = express.Router();
 var xlsx  = require("node-xlsx")
 var fs = require('fs');
 var http = require("http")
+var sha1 = require("js-sha1")
 var sms_headers = ["类型","语料","status"];
 var nlp_headers = ["账号类型","语料","type","拒绝类型"]
 
@@ -26,12 +27,15 @@ const m_options = {
 
 const sms_options = {
   hostname: '47.103.44.86',  
-  path: '/coomaan/sms_check',  
+  path: '/coomaan/sms_check_v2',  
   method: 'POST', 
   headers: {  
       'Content-Type': 'application/json; charset=UTF-8'  
   }
 }
+
+const clientId = "CM001";
+const secret = "07d69c9689a5e44f4904dd885dc411f0";
 
 var options = m_options;
 
@@ -85,7 +89,12 @@ var postGuardMain = index =>{
   }
   var currentText = array[index][1];
   console.log("index: " + index +" text: " + currentText);
+  var time = Math.round(new Date/1000);
+  var hash = sha1(clientId + time + secret);
   var content = JSON.stringify({
+    "client_id": clientId,
+    "timestamp": time,
+    "sign":hash,
     "port_type":smsType,
     "content":currentText,
     "sender":"3333",
