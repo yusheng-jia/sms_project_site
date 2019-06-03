@@ -43,35 +43,7 @@
         <div class="form-group">
           <label>拒绝结果 <span ng-class="status" ng-bind="status_text"></span></label>
         </div>
-        <!-- <div class="form-group">
-          <label>拒绝类型 <u ng-bind="rejectType"></u></label>
-        </div>
-        <div class="from-group">
-          <label>相似语料</label>
-          <ul class="list-group" ng-if="showSimilar">
-            <li ng-repeat="item in max3" class="list-group-item list-group-item-secondary">{{item}}</li>
-          </ul>
-        </div> -->
       </form>
-      <!-- <form class="col-6" ng-submit="guardJudge()" id="form3" name="form3">
-        <h4>酷曼卫士</h4>
-        <div class="form-group">
-          <label for="sel2">短信类型</label>
-          <select ng-init="guardTpye = guardTpyes[0]" ng-model="guardTpye" ng-options="x for x in guardTpyes"
-            class="form-control col-6 col-md-2" id="sel2">
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="comment2">短信内容</label>
-          <textarea ng-model="guardMessage" class="form-control" rows="5" id="comment2"></textarea>
-        </div>
-        <div class="form-group">
-          <button type="submit" class="btn btn-primary">提交判断</button>
-        </div>
-        <div class="form-group">
-          <label>拒绝结果 <span ng-class="guard_status" ng-bind="guard_status_text"></span></label>
-        </div>
-      </form> -->
     </div>
     <div class="row top">
       <form id="form2" name="form2" class="col-8" ng-submit="submit()">
@@ -100,33 +72,6 @@
           </div>
         </div>
       </form>
-
-      <!-- <form id="form4" name="form4" class="col-6" ng-submit="guardSubmit()">
-        <h4>批量判断</h4>
-        <div class="form-group">
-          <label for="sel4">短信类型</label>
-          <select class="form-control col-4 col-md-2" ng-init="guardMultiTpye = guardTpyes[0]" ng-model="guardMultiTpye"
-            ng-options="x for x in guardTpyes" id="sel4">
-          </select>
-        </div>
-        <div class="form-group">
-          <input type="file" name="file" class="form-control-file" ngf-select ng-model="guardFile"
-            ngf-pattern="'.xls,.xlsx,.csv'" ngf-max-size="5MB" id="comment3" required></input>
-          <font size="2" color="#999999">选择你要判断的文件夹所在目录。文件大小控制在5M以内，格式为xls,xlsx,csv</font>
-        </div>
-        <div class="form-group">
-          <button type="submit" class="btn btn-primary">提交判断</button>
-        </div>
-        <div ng-if="!showProcessGuard" class="form-group">
-          <label class="yes form-check">点击下载（<a href="/down_guard_file">sms_guard.xlsx</a>）
-          </label>
-        </div>
-        <div ng-if="showProcessGuard" class="form-group" ng-class="{progress: true, 'progress-striped': smsvm.striped}">
-          <div ng-class="['progress-bar', smsvm.style ]" ng-style="{width: smsvm.value + '%'}" role="progressbar">
-            <div ng-if="smsvm.showLabel">{{smsvm.value}}%</div>
-          </div>
-        </div>
-      </form> -->
     </div>
   </div>
 </body>
