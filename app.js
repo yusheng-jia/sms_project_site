@@ -23,7 +23,6 @@ app.use("/scripts",express.static('node_modules/'))
 app.use(multipart({uploadDir:'./uploads'}));
 
 app.get("/down_file",apisRouter.downFile)
-app.get("/down_guard_file", apisRouter.downGuardFile)
 app.get("/file_status", apisRouter.fileStatus)
 app.post('/file-upload',multipartMiddleware, apisRouter.uploadFile)
 

@@ -4,25 +4,6 @@ var fs = require('fs');
 var http = require("http")
 var sha1 = require("js-sha1")
 var sms_headers = ["类型","语料","status"];
-var nlp_headers = ["账号类型","语料","type","拒绝类型"]
-
-const n_options = {  
-  hostname: '47.103.43.69',  
-  path: '/sms_n_account',  
-  method: 'POST',  
-  headers: {  
-      'Content-Type': 'application/json; charset=UTF-8'  
-  }  
-};
-
-const m_options = {  
-  hostname: '47.103.43.69',  
-  path: '/sms_m_account',  
-  method: 'POST', 
-  headers: {  
-      'Content-Type': 'application/json; charset=UTF-8'  
-  }  
-};
 
 const sms_options = {
   hostname: '47.103.44.86',  
@@ -36,7 +17,7 @@ const sms_options = {
 const clientId = "CM001";
 const secret = "07d69c9689a5e44f4904dd885dc411f0";
 
-var options = m_options;
+var options = sms_options;
 
 var path = "uploads";
 
@@ -46,29 +27,24 @@ var array = [];
 var curIndex = 0;
 var smsType = 1;
 
+/** 文件处理 */
 function handleFile(){
-  console.log("handleFile........")
   fs.readdir(path, function(err,files){
     if (err) return console.log(err);
     files.forEach(function (file) {
       var curPath = path + "/" + file;
-      console.log("处理文件PATH: " + curPath);
       if(fileTpye == 'text/csv'){
         array = handleCsvFile(curPath);
       }else{
         var obj = xlsx.parse(curPath);
         array = obj[0].data;
       }
-      console.log("options : " + options)
-      if(options == sms_options){
-        postGuardMain(0)
-      }else{
-        postMain(0);
-      }
+      postGuardMain(0)
      })
   })  
 }
 
+/** csv文件处理 */
 function handleCsvFile(file){
   console.log("csvFile: " + file);
   var tempArray = [];
@@ -80,6 +56,7 @@ function handleCsvFile(file){
   return tempArray;
 }
 
+/** 网络请求: 短信拦截 */
 var postGuardMain = index =>{
   curIndex = index - 1;
   if(index >= array.length){
@@ -125,54 +102,13 @@ var postGuardMain = index =>{
   
 }
 
-function postMain(index){
-  // 生成文件后进度才能到100 所以这里当前进度减1
-  curIndex = index - 1;
-  if(index >= array.length){
-    exportExcelFile(nlp_headers,"sms_result.xlsx");
-    return;
-  }
-  var currentText = array[index][1];
-  console.log("index: " + index +" text: " + currentText);
-  var content = JSON.stringify({"query":currentText,"userId":"dev001"});
-  var req = http.request(options, (res) => {
-    // console.log('STATUS: ' + res.statusCode);  
-    // console.log('HEADERS: ' + JSON.stringify(res.headers));  
-    res.setEncoding('utf8');  
-    res.on('data', function (body) { 
-      try {
-        var obj = eval("("+body+")"); 
-        console.log('BODY: ' + obj.name); 
-        array[index].push(obj.name);
-        if(obj.type != ""){
-          array[index].push(obj.type);
-        }
-      } catch (error) {
-        // console.log(error)
-      }
-    })
-    res.on('end',function(){
-      postMain(index + 1);
-    })
-  })
-
-  req.on('error', function (e) {  
-    console.log('problem with request: ' + e.message);  
-  }) 
-  //请求
-  req.write(content);
-  
-  req.end();
-}
-
+/**  文件下载 */
 function downFile(req, res, next){
   res.download("./sms_result.xlsx");
 }
 
-function downGuardFile(req, res, next){
-  res.download("./sms_guard.xlsx");
-}
 
+/** 生成文件操作 */
 function exportExcelFile(headers,fileName){
   console.log("exportExcelFile")
   var data = array;
@@ -188,21 +124,16 @@ function exportExcelFile(headers,fileName){
   // fs.writeFileSync('sms_result.xlsx', buffer, 'binary');
 }
 
+/** 传过来的文件 */
 function uploadFile(req, res){
   console.log("前端传过来的tpye: " + req.body.type);
   array = [];
   fileTpye = req.files.file.type;
-  if(req.body.type == "M"){
-    options = m_options;
-  }else if(req.body.type == "N"){
-    options = n_options;
+  options = sms_options;
+  if(req.body.type == "行业短信"){
+    smsType = 1;
   }else{
-    options = sms_options;
-    if(req.body.type == "行业短信"){
-      smsType = 1;
-    }else{
-      smsType = 2;
-    }
+    smsType = 2;
   }
   console.log("options : " + options);
   newPath = req.files.file.path;
@@ -212,6 +143,7 @@ function uploadFile(req, res){
   handleFilePre(newPath);
 }
 
+/** 文件预处理，删除临时文件 */
 function handleFilePre(newPath){
   fs.readdir(path, function(err,files){
     if (err) return console.log(err);
@@ -225,6 +157,7 @@ function handleFilePre(newPath){
   })
 }
 
+/** 获取进度 */
 function fileStatus(req,res){
   var percentage = 0
   if(array.length == 0){
@@ -240,6 +173,5 @@ function fileStatus(req,res){
 module.exports = {
   downFile:downFile,
   uploadFile:uploadFile,
-  fileStatus:fileStatus,
-  downGuardFile:downGuardFile
+  fileStatus:fileStatus
 }
