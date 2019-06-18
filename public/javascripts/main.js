@@ -45,7 +45,7 @@ app.controller("main", function ($scope, $interval, $http, Upload) {
       }
     }).then(res => {
       console.log("成功了: " + JSON.stringify(res.data))
-      var status = res.data.data.status
+      var status = res.data.data[0].status
       switch (status) {
         case 300:
           $scope.status = "no"

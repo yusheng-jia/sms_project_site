@@ -83,7 +83,7 @@ var postGuardMain = index =>{
       try {
         var obj = eval("("+body+")"); 
         console.log('BODY: ' + obj.data); 
-        array[index].push(obj.data.status);
+        array[index].push(obj.data[0].status);
       } catch (error) {
         
       }
