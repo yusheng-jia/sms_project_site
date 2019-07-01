@@ -56,6 +56,17 @@ function handleCsvFile(file){
   return tempArray;
 }
 
+function getMoble() {
+  var prefixArray = new Array("130", "131", "132", "133", "135", "137", "138", "170", "187", "189");
+  var i = parseInt(10 * Math.random());
+  var prefix = prefixArray[i];
+  for (var j = 0; j < 8; j++) {
+    prefix = prefix + Math.floor(Math.random() * 10);
+  }
+  return prefix;
+}
+
+
 /** 网络请求: 短信拦截 */
 var postGuardMain = index =>{
   curIndex = index - 1;
@@ -67,14 +78,15 @@ var postGuardMain = index =>{
   console.log("index: " + index +" text: " + currentText);
   var time = Math.round(new Date/1000);
   var hash = sha1(clientId + time + secret);
+  var receiver = Math.random
   var content = JSON.stringify({
     "client_id": clientId,
     "timestamp": time,
     "sign":hash,
     "port_type":smsType,
     "content":currentText,
-    "sender":"3333",
-    "receiver": "3333"
+    "sender":"1064567851",
+    "receiver": getMoble()
   });
 
   var req = http.request(sms_options, res =>{
