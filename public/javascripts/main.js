@@ -21,15 +21,42 @@ app.controller("main", function ($scope, $interval, $http, Upload) {
   vm.showLabel = true;
   vm.striped = true;
 
+  function isPoneAvailable() {
+    var myreg = /^[1][3,4,5,7,8][0-9]{9}$/;
+    if (!myreg.test($scope.receiver_number)) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  function getMoble() {
+    var prefixArray = new Array("130", "131", "132", "133", "135", "137", "138", "170", "187", "189");
+    var i = parseInt(10 * Math.random());
+    var prefix = prefixArray[i];
+    for (var j = 0; j < 8; j++) {
+      prefix = prefix + Math.floor(Math.random() * 10);
+    }
+    return prefix;
+  }
+
   $scope.singleJudge = () => {
+    if(!isPoneAvailable()){
+      alert("输入正确的号码")
+      return;
+    }
+
     if ($scope.message == "" || $scope.message == undefined) {
       alert("输入内容不能为空")
       return;
     }
 
-    var type = $scope.coomaanTpye == "行业短信"?1:2;
+
+    var type = $scope.coomaanTpye == "行业短信" ? 1 : 2;
     var time = Math.round(new Date / 1000);
-    var hash = sha1(clientId+time+secret);
+    var hash = sha1(clientId + time + secret);
+
+
 
     $http({
       url: guard_api_v2,
@@ -37,11 +64,11 @@ app.controller("main", function ($scope, $interval, $http, Upload) {
       data: {
         "client_id": clientId,
         "timestamp": time,
-        "sign":hash,
+        "sign": hash,
         "port_type": type,
         "content": $scope.message,
-        "sender": "3333",
-        "receiver": "3333"
+        "sender": "1064567851",
+        "receiver": $scope.receiver_number,
       }
     }).then(res => {
       console.log("成功了: " + JSON.stringify(res.data))
