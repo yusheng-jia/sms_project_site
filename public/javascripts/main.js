@@ -41,10 +41,10 @@ app.controller("main", function ($scope, $interval, $http, Upload) {
   }
 
   $scope.singleJudge = () => {
-    if(!isPoneAvailable()){
-      alert("输入正确的号码")
-      return;
-    }
+    // if(!isPoneAvailable()){
+    //   alert("输入正确的号码")
+    //   return;
+    // }
 
     if ($scope.message == "" || $scope.message == undefined) {
       alert("输入内容不能为空")
@@ -72,6 +72,11 @@ app.controller("main", function ($scope, $interval, $http, Upload) {
       }
     }).then(res => {
       console.log("成功了: " + JSON.stringify(res.data))
+      if(res.data.status == "11"){
+        $scope.status = "no"
+        $scope.status_text = "存在号码异常"
+        return;
+      }
       var status = res.data.data[0].status
       switch (status) {
         case 300:
