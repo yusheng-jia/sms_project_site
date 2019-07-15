@@ -45,7 +45,7 @@ app.controller("main", function ($scope, $interval, $http, Upload) {
     //   alert("输入正确的号码")
     //   return;
     // }
-
+    $scope.status_text = ""
     if ($scope.message == "" || $scope.message == undefined) {
       alert("输入内容不能为空")
       return;
@@ -77,36 +77,40 @@ app.controller("main", function ($scope, $interval, $http, Upload) {
         $scope.status_text = "存在号码异常"
         return;
       }
-      var status = res.data.data[0].status
-      switch (status) {
-        case 300:
-          $scope.status = "no"
-          $scope.status_text = "违法分类，不能发送"
-          break;
-        case 400:
-          $scope.status = "no"
-          $scope.status_text = "诈骗分类，不能发送"
-          break;
-        case 500:
-          $scope.status = "no"
-          $scope.status_text = "广告分类，不能发送"
-          break;
-        case 600:
-          $scope.status = "no"
-          $scope.status_text = "其它原因不下发"
-          break;
-        case 1:
-          $scope.status = "yes"
-          $scope.status_text = "信息都正常，可发送"
-          break;
-        case -1:
-          $scope.status = "chat"
-          $scope.status_text = "未知，未探测到"
-          break;
-        default:
-          $scope.status = "chat"
-          $scope.status_text = "未知，未探测到"
-          break;
+      var data = res.data.data;
+      for(let index in data){
+        $scope.status_text += data[index].receiver + "，";
+        switch (data[index].status) {
+          case 300:
+            $scope.status = "no"
+            $scope.status_text += "违法分类，不能发送 -- "
+            break;
+          case 400:
+            $scope.status = "no"
+            $scope.status_text += "诈骗分类，不能发送 -- "
+            break;
+          case 500:
+            $scope.status = "no"
+            $scope.status_text += "广告分类，不能发送 -- "
+            break;
+          case 600:
+            $scope.status = "no"
+            $scope.status_text += "其它原因不下发 -- "
+            break;
+          case 1:
+            $scope.status = "yes"
+            $scope.status_text += "信息都正常，可发送 -- "
+            break;
+          case -1:
+            $scope.status = "chat"
+            $scope.status_text += "未知，未探测到 -- "
+            break;
+          default:
+            $scope.status = "chat"
+            $scope.status_text += "未知，未探测到 -- "
+            break;
+          }
+        $scope.status_text += data[index].message + "\n"
       }
     }, error => {
       console.log("报错了")
