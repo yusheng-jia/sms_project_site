@@ -110,7 +110,12 @@ app.controller("main", function ($scope, $interval, $http, Upload) {
             $scope.status_text += "未知，未探测到 -- "
             break;
           }
-        $scope.status_text += data[index].message + "\n"
+        if(data[index].phonenumstatus == 1){
+          $scope.status_text += "号码正常 \n";
+        }else{
+          $scope.status_text += "号码异常 \n";
+        }
+        
       }
     }, error => {
       console.log("报错了")
