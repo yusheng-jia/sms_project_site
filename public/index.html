@@ -45,8 +45,14 @@
           <button type="submit" class="btn btn-primary">提交判断</button>
         </div>
         <div class="form-group">
-          <label>拒绝结果</label>
-          <p ng-class="status" >{{status_text}}</p>
+          <label>号码检测结果</label>
+          <div ng-repeat = "item in phoneStatus">
+            <p ng-class="item.status" >{{item.text}}</p>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>短信检测结果</label>
+            <p ng-class="status" >{{status_text}}</p>
         </div>
       </form>
     </div>

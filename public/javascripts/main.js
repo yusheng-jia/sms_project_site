@@ -10,6 +10,7 @@ var app = angular.module("app", ['ngFileUpload'])
 app.controller("main", function ($scope, $interval, $http, Upload) {
   $scope.status = "start";
   $scope.status_text = "其它";
+  $scope.phoneStatus = [];
   $scope.types = ["M", "N"];
   $scope.guardTpyes = ["营销短信", "行业短信"];
   $scope.progress = 0;
@@ -46,6 +47,7 @@ app.controller("main", function ($scope, $interval, $http, Upload) {
     //   return;
     // }
     $scope.status_text = ""
+    $scope.phoneStatus = [];
     if ($scope.message == "" || $scope.message == undefined) {
       alert("输入内容不能为空")
       return;
@@ -79,41 +81,45 @@ app.controller("main", function ($scope, $interval, $http, Upload) {
       }
       var data = res.data.data;
       for(let index in data){
-        $scope.status_text += data[index].receiver + "，";
+        var tempPhoneStatus = {"status":"","text":""}
         switch (data[index].status) {
           case 300:
             $scope.status = "no"
-            $scope.status_text += "违法分类，不能发送 -- "
+            $scope.status_text = "违法分类，不能发送"
             break;
           case 400:
             $scope.status = "no"
-            $scope.status_text += "诈骗分类，不能发送 -- "
+            $scope.status_text = "诈骗分类，不能发送"
             break;
           case 500:
             $scope.status = "no"
-            $scope.status_text += "广告分类，不能发送 -- "
+            $scope.status_text = "广告分类，不能发送"
             break;
           case 600:
             $scope.status = "no"
-            $scope.status_text += "其它原因不下发 -- "
+            $scope.status_text = "其它原因不下发"
             break;
           case 1:
             $scope.status = "yes"
-            $scope.status_text += "信息都正常，可发送 -- "
+            $scope.status_text = "信息都正常，可发送"
             break;
           case -1:
             $scope.status = "chat"
-            $scope.status_text += "未知，未探测到 -- "
+            $scope.status_text = "未知，未探测到"
             break;
           default:
             $scope.status = "chat"
-            $scope.status_text += "未知，未探测到 -- "
+            $scope.status_text = "未知，未探测到"
             break;
           }
         if(data[index].phonenumstatus == 1){
-          $scope.status_text += "号码正常 \n";
+          tempPhoneStatus.status = "yes";
+          tempPhoneStatus.text = data[index].receiver + " - " + "号码正常"
+          $scope.phoneStatus.push(tempPhoneStatus)
         }else{
-          $scope.status_text += "号码异常 \n";
+          tempPhoneStatus.status = "no";
+          tempPhoneStatus.text = data[index].receiver + " - " + "号码异常"
+          $scope.phoneStatus.push(tempPhoneStatus)
         }
         
       }
